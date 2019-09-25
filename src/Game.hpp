@@ -4,15 +4,13 @@
 #include <cmath>
 #include <cstdint>
 #include <exception>
-#include <iostream>
 #include <memory>
 #include <vector>
 
-#include "SDL2/SDL.h"
-
+#include "Bullet.hpp"
 #include "Player.hpp"
+#include "SDL_Helpers.hpp"
 #include "Tile.hpp"
-#include "Utils.hpp"
 
 namespace color_shootout
 {
@@ -29,10 +27,12 @@ namespace color_shootout
         SDL_Renderer *renderer = nullptr;
         bool running = false;
 
-        int32_t tile_size = 1000, tilemap_rows = 4, tilemap_cols = 4;
+        int32_t tile_size = 500, tilemap_rows = 4, tilemap_cols = 4;
         std::array<Tile, 16> tiles;
-        // SDL_Texture *bullet_texture = nullptr;
-        // std::vector<Bullet> bullets;
+        
+        std::vector<Bullet> bullets;
+        SDL_Texture *bullet_texture = nullptr;
+        
         std::unique_ptr<Player> player = nullptr;
 
         void update();

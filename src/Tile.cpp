@@ -7,7 +7,7 @@ namespace color_shootout
         update();
     }
 
-    Tile::Tile(Vec2 position, uint32_t width, uint32_t height)
+    Tile::Tile(Vec2 position, int32_t width, int32_t height)
     {
         this->position = position;
         this->width = width;
@@ -26,22 +26,22 @@ namespace color_shootout
             switch((int32_t) std::rand() % 6)
             {
                 case 0:
-                    color = RED;
+                    color = Red;
                     break;
                 case 1:
-                    color = YELLOW;
+                    color = Yellow;
                     break;
                 case 2:
-                    color = VIOLET;
+                    color = Violet;
                     break;
                 case 3:
-                    color = GREEN;
+                    color = Green;
                     break;
                 case 4:
-                    color = TURQUOISE;
+                    color = Turquoise;
                     break;
                 case 5:
-                    color = BLUE;
+                    color = Blue;
                     break;
                 default:
                     break;

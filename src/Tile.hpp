@@ -1,33 +1,22 @@
 #pragma once
 
-#include <cstdint>
 #include <cstdlib>
 
-#include <SDL2/SDL.h>
-
-#include "Utils.hpp"
+#include "Color.hpp"
+#include "Vec2.hpp"
 
 namespace color_shootout
 {
-    enum TileColor
-    {
-        RED = 0xFF0000,
-        YELLOW = 0xFFFF00,
-        VIOLET = 0xFF00FF,
-        GREEN = 0x00FF00,
-        TURQUOISE = 0x00FFFF,
-        BLUE = 0x0000FF
-    };
-
     class Tile
     {
     public:
         Vec2 position;
-        uint32_t width = 0, height = 0;
-        TileColor color;
+        int32_t width = 0, height = 0;
+        
+        Color color;
 
         Tile();
-        Tile(Vec2 position, uint32_t width, uint32_t height);
+        Tile(Vec2 position, int32_t width, int32_t height);
 
         void update();
 

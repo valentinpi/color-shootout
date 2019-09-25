@@ -7,7 +7,7 @@ namespace color_shootout
         if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO) != 0)
             throw std::exception();
 
-        window = SDL_CreateWindow("shootout", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, 
+        window = SDL_CreateWindow("color-shootout", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, 
             window_height, 0);
         if (window == nullptr)
             throw std::exception();
@@ -25,30 +25,15 @@ namespace color_shootout
                 tiles[row * tilemap_cols + col] = Tile(position, tile_size, tile_size);
             }
         }
+
+        bullet_texture = generate_rect_texture(renderer, White, Bullet::width, Bullet::height);
         
-        /*
-        bullet_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Bullet::width, 
-            Bullet::height);
-
-        Uint8 prev_r = 0, prev_g = 0, prev_b = 0, prev_a = 0;
-        SDL_GetRenderDrawColor(renderer, &prev_r, &prev_g, &prev_b, &prev_a);
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_SetRenderTarget(renderer, bullet_texture);
-
-        SDL_Rect rect = { 0, 0, Bullet::width, Bullet::height };
-        SDL_RenderFillRect(renderer, &rect);
-        SDL_RenderPresent(renderer);
-
-        SDL_SetRenderTarget(renderer, nullptr);
-        SDL_SetRenderDrawColor(renderer, prev_r, prev_g, prev_b, prev_a);
-        */
-
         player.reset(new Player(renderer, Vec2(window_width / 2, window_height / 2)));
    }
 
     Game::~Game()
     {
-        //SDL_DestroyTexture(bullet_texture);
+        SDL_DestroyTexture(bullet_texture);
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -60,6 +45,8 @@ namespace color_shootout
 
         while (running)
         {
+            bool shoot = false;
+
             SDL_Event event;
             while (SDL_PollEvent(&event))
             {
@@ -68,12 +55,10 @@ namespace color_shootout
                     case SDL_QUIT:
                         running = false;
                         break;
-                    /*
                     case SDL_KEYDOWN:
                         if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
-                            std::cout << "Pressed space!" << std::endl;
+                            shoot = true;
                         break;
-                    */
                     default:
                         break;
                 }
@@ -102,6 +87,21 @@ namespace color_shootout
                     for (auto &tile : tiles)
                         tile.position -= (5.0F / distance_magnitude * distance);
                 }
+
+                if (shoot)
+                    bullets.emplace_back(player->position, distance);
+            }
+
+            for (std::size_t i = 0; i < bullets.size(); i++)
+            {
+                bullets[i].position += bullets[i].direction;
+
+                if (int(bullets[i].position.x) < 0 || int(bullets[i].position.x) > window_width ||
+                    int(bullets[i].position.y) < 0 || int(bullets[i].position.y) > window_height)
+                {
+                    bullets.erase(bullets.begin() + i);
+                    i--;
+                }
             }
 
             update();
@@ -127,6 +127,13 @@ namespace color_shootout
                 tile.color & 0x0000FF, 255);
             SDL_Rect rect = { int(tile.position.x), int(tile.position.y), int(tile.width), int(tile.height) };
             SDL_RenderFillRect(renderer, &rect);
+        }
+
+        for (auto &bullet : bullets)
+        {
+            SDL_Rect dstrect = { int(bullet.position.x) - int(bullet.width) / 2, 
+                int(bullet.position.y) - int(bullet.height) / 2, int(bullet.width), int(bullet.height) };
+            SDL_RenderCopyEx(renderer, bullet_texture, nullptr, &dstrect, bullet.angle, &bullet.center, SDL_FLIP_NONE);
         }
 
         SDL_Rect dstrect = { int(player->position.x) - int(player->size) / 2, 
