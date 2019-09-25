@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <exception>
 #include <iostream>
+#include <memory>
+#include <vector>
 
 #include "SDL2/SDL.h"
 
@@ -27,10 +29,11 @@ namespace color_shootout
         SDL_Renderer *renderer = nullptr;
         bool running = false;
 
-        float angle = 0.0;
-        Player player;
-
-        std::array<Tile, 4> tiles;
+        int32_t tile_size = 1000, tilemap_rows = 4, tilemap_cols = 4;
+        std::array<Tile, 16> tiles;
+        // SDL_Texture *bullet_texture = nullptr;
+        // std::vector<Bullet> bullets;
+        std::unique_ptr<Player> player = nullptr;
 
         void update();
         void render();

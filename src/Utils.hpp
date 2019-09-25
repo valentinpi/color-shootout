@@ -17,6 +17,13 @@ namespace color_shootout
         float dot(const Vec2 &other);
         float magnitude();
 
+        Vec2 operator+ (const Vec2 &other);
+        void operator+=(const Vec2 &other);
+        Vec2 operator- (const Vec2 &other);
         void operator-=(const Vec2 &other);
+        Vec2 operator* (const float &scalar);
+        void operator*=(const float &scalar);
     };
+
+    Vec2 operator*(const float &left, const Vec2 &right);
 }

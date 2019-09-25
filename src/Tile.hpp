@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <cstdlib>
 
+#include <SDL2/SDL.h>
+
 #include "Utils.hpp"
 
 namespace color_shootout

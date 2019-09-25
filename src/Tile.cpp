@@ -18,6 +18,7 @@ namespace color_shootout
 
     void Tile::update()
     {
+        // Color switch
         color_counter++;
 
         if (color_counter == COLOR_SWITCH)
