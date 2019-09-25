@@ -5,8 +5,9 @@
 
 namespace color_shootout
 {
-    struct Vec2
+    class Vec2
     {
+    public:
         float x = 0.0F, y = 0.0F;
 
         Vec2() = default;

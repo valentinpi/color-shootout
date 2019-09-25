@@ -2,7 +2,7 @@
 
 namespace color_shootout
 {
-    Player::Player(SDL_Renderer *renderer, const Vec2 position) : position(position)
+    Player::Player(SDL_Renderer *renderer, const Vec2 &position) : position(position)
     {
         center = { int(size) / 2, int(size) / 2};
 

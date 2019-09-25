@@ -1,4 +1,4 @@
-#include "SDL_Helpers.hpp"
+#include "SDLHelpers.hpp"
 
 namespace color_shootout
 {

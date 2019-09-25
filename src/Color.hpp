@@ -5,7 +5,7 @@ namespace color_shootout
     enum Color
     {
         White = 0xFFFFFF,
-        Black = 0xFFFFFF,
+        Black = 0x000000,
         Red = 0xFF0000,
         Yellow = 0xFFFF00,
         Violet = 0xFF00FF,

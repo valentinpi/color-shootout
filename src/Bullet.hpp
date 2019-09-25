@@ -8,8 +8,9 @@
 
 namespace color_shootout
 {
-    struct Bullet
+    class Bullet
     {
+    public:
         Vec2 position;
         static const int32_t width = 10, height = 30;
 

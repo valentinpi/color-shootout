@@ -23,7 +23,7 @@ namespace color_shootout
 
         if (color_counter == COLOR_SWITCH)
         {
-            switch((int32_t) std::rand() % 6)
+            switch(std::rand() % 6)
             {
                 case 0:
                     color = Red;

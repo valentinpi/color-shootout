@@ -4,12 +4,14 @@
 #include <cmath>
 #include <cstdint>
 #include <exception>
+#include <iostream>
 #include <memory>
 #include <vector>
 
 #include "Bullet.hpp"
+#include "Enemy.hpp"
 #include "Player.hpp"
-#include "SDL_Helpers.hpp"
+#include "SDLHelpers.hpp"
 #include "Tile.hpp"
 
 namespace color_shootout
@@ -26,14 +28,23 @@ namespace color_shootout
         int32_t window_width = 1280, window_height = 720;
         SDL_Renderer *renderer = nullptr;
         bool running = false;
+        uint32_t time_elapsed = 0;
 
         int32_t tile_size = 500, tilemap_rows = 4, tilemap_cols = 4;
         std::array<Tile, 16> tiles;
         
+        std::unique_ptr<Player> player = nullptr;
+        
+        bool shoot = false;
+        int32_t shooting_delay = 0;
+        int32_t enemies_shot = 0;
         std::vector<Bullet> bullets;
         SDL_Texture *bullet_texture = nullptr;
-        
-        std::unique_ptr<Player> player = nullptr;
+
+        static const int32_t ENEMY_SPAWN_SWITCH = 64;
+        int32_t enemy_spawn_counter = 0;
+        std::vector<Enemy> enemies;
+        SDL_Texture *enemy_texture = nullptr;
 
         void update();
         void render();
