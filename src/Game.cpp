@@ -54,17 +54,17 @@ namespace color_shootout
             SDL_Event event;
             while (SDL_PollEvent(&event)) {
                 switch (event.type) {
-                case SDL_QUIT:
-                    running = false;
-                    break;
-                case SDL_KEYDOWN:
-                    if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
-                        if (shooting_delay == 0)
-                            shoot = true;
-                    }
-                    break;
-                default:
-                    break;
+                    case SDL_QUIT:
+                        running = false;
+                        break;
+                    case SDL_KEYDOWN:
+                        if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                            if (shooting_delay == 0)
+                                shoot = true;
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -174,23 +174,23 @@ namespace color_shootout
         if (enemy_spawn_counter == ENEMY_SPAWN_SWITCH) {
             Vec2 position;
             switch (std::rand() % 4) {
-            case 0:
-                position.x = std::rand() % window_width;
-                position.y = -Enemy::size;
-                break;
-            case 1:
-                position.x = window_width + Enemy::size;
-                position.y = std::rand() % window_height;
-                break;
-            case 2:
-                position.x = std::rand() % window_width;
-                position.y = window_height + Enemy::size;
-                break;
-            case 3:
-                position.x = -Enemy::size;
-                position.y = std::rand() % window_height;
-                break;
-            default: break;
+                case 0:
+                    position.x = std::rand() % window_width;
+                    position.y = -Enemy::size;
+                    break;
+                case 1:
+                    position.x = window_width + Enemy::size;
+                    position.y = std::rand() % window_height;
+                    break;
+                case 2:
+                    position.x = std::rand() % window_width;
+                    position.y = window_height + Enemy::size;
+                    break;
+                case 3:
+                    position.x = -Enemy::size;
+                    position.y = std::rand() % window_height;
+                    break;
+                default: break;
             }
 
             enemies.emplace_back(position);

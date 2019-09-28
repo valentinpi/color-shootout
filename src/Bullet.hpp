@@ -21,6 +21,6 @@ namespace color_shootout
 
         Bullet(const Vec2 &position, const Vec2 &direction);
     private:
-        float velocity = 5.0F;
+        float velocity = 20.0F;
     };
 }

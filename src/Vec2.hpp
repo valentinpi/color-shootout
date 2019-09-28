@@ -18,6 +18,7 @@ namespace color_shootout
         float dot(const Vec2 &other) const;
         float magnitude() const;
 
+        bool operator==(const Vec2 &other) const;
         Vec2 operator+ (const Vec2 &other) const;
         void operator+=(const Vec2 &other);
         Vec2 operator- (const Vec2 &other) const;

@@ -29,6 +29,11 @@ namespace color_shootout
         return std::sqrt(x * x + y * y);
     }
 
+    bool Vec2::operator==(const Vec2 &other) const
+    {
+        return (x - other.x < 0.001 && y - other.y < 0.001);
+    }
+
     Vec2 Vec2::operator+ (const Vec2 &other) const
     {
         Vec2 result(x + other.x, y + other.y);

@@ -36,13 +36,13 @@ namespace color_shootout
         std::unique_ptr<Player> player = nullptr;
         
         bool shoot = false;
-        static const int32_t SHOOTING_DELAY_SWITCH = 32;
+        static const int32_t SHOOTING_DELAY_SWITCH = 16;
         int32_t shooting_delay = 0;
         int32_t enemies_shot = 0;
         std::vector<Bullet> bullets;
         SDL_Texture *bullet_texture = nullptr;
 
-        static const int32_t ENEMY_SPAWN_SWITCH = 80;
+        static const int32_t ENEMY_SPAWN_SWITCH = 40;
         int32_t enemy_spawn_counter = 0;
         std::vector<Enemy> enemies;
         SDL_Texture *enemy_texture = nullptr;
