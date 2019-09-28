@@ -1,3 +1,4 @@
+.gitignore
 .vscode
 bin/CMakeFiles
 bin/cmake_install.cmake
