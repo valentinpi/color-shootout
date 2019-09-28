@@ -2,4 +2,4 @@
 
 ## Minimalist Shooter written in SDL
 
-[First release for Windows users](https://drive.google.com/open?id=1exVBwbcNbiYumF7z4nPuP0iAF3lRynIL)
+[Current Windows release](https://drive.google.com/open?id=1qovZjd-7iNLF8Mhc7iO3fOQlyQglcoeV)

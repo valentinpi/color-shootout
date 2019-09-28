@@ -21,30 +21,28 @@ namespace color_shootout
         // Color switch
         color_counter++;
 
-        if (color_counter == COLOR_SWITCH)
-        {
-            switch(std::rand() % 6)
-            {
-                case 0:
-                    color = Red;
-                    break;
-                case 1:
-                    color = Yellow;
-                    break;
-                case 2:
-                    color = Violet;
-                    break;
-                case 3:
-                    color = Green;
-                    break;
-                case 4:
-                    color = Turquoise;
-                    break;
-                case 5:
-                    color = Blue;
-                    break;
-                default:
-                    break;
+        if (color_counter == COLOR_SWITCH) {
+            switch(std::rand() % 6) {
+            case 0:
+                color = Red;
+                break;
+            case 1:
+                color = Yellow;
+                break;
+            case 2:
+                color = Violet;
+                break;
+            case 3:
+                color = Green;
+                break;
+            case 4:
+                color = Turquoise;
+                break;
+            case 5:
+                color = Blue;
+                break;
+            default:
+                break;
             }
 
             color_counter = 0;

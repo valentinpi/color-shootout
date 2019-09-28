@@ -16,10 +16,8 @@ namespace color_shootout
         if (renderer == nullptr)
             throw std::exception();
 
-        for (int32_t row = 0; row < tilemap_rows; row++)
-        {
-            for (int32_t col = 0; col < tilemap_cols; col++)
-            {
+        for (int32_t row = 0; row < tilemap_rows; row++) {
+            for (int32_t col = 0; col < tilemap_cols; col++) {
                 Vec2 position = { window_width / 2 - tile_size * tilemap_cols / 2 + row * tile_size, 
                     window_height / 2 - tile_size * tilemap_rows / 2 + col * tile_size };
                 tiles[row * tilemap_cols + col] = Tile(position, tile_size, tile_size);
@@ -52,25 +50,21 @@ namespace color_shootout
         running = true;
         time_elapsed = SDL_GetTicks();
 
-        while (running)
-        {
+        while (running) {
             SDL_Event event;
-            while (SDL_PollEvent(&event))
-            {
-                switch (event.type)
-                {
-                    case SDL_QUIT:
-                        running = false;
-                        break;
-                    case SDL_KEYDOWN:
-                        if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
-                        {
-                            if (shooting_delay == 0)
-                                shoot = true;
-                        }
-                        break;
-                    default:
-                        break;
+            while (SDL_PollEvent(&event)) {
+                switch (event.type) {
+                case SDL_QUIT:
+                    running = false;
+                    break;
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                        if (shooting_delay == 0)
+                            shoot = true;
+                    }
+                    break;
+                default:
+                    break;
                 }
             }
 
@@ -91,67 +85,69 @@ namespace color_shootout
         enemy_spawn_counter++;
 
         // Player movement
-        {
-            int mouse_x = 0, mouse_y = 0;
-            SDL_GetMouseState(&mouse_x, &mouse_y);
-            Vec2 mouse_position(mouse_x, mouse_y);
+        int mouse_x = 0, mouse_y = 0;
+        SDL_GetMouseState(&mouse_x, &mouse_y);
+        Vec2 mouse_position(mouse_x, mouse_y);
 
-            Vec2 distance = mouse_position - player->position;
-            const float distance_magnitude = distance.magnitude();
+        Vec2 distance = mouse_position - player->position;
+        const float distance_magnitude = distance.magnitude();
 
-            if (distance_magnitude > player->size / 2)
-            {
-                // Turn player to mouse
-                Vec2 up(0.0F, -1.0F);
-                float cos_angle = up.dot(distance) / (up.magnitude() * distance_magnitude);
-                player->angle = std::acos(cos_angle) * 180.0F / M_PI;
-                if (distance.x < up.x)
-                    player->angle = 360.0F - player->angle;
+        if (distance_magnitude > player->size / 2) {
+            // Turn player to mouse
+            Vec2 up(0.0F, -1.0F);
+            float cos_angle = up.dot(distance) / (up.magnitude() * distance_magnitude);
+            player->angle = std::acos(cos_angle) * 180.0F / M_PI;
+            if (distance.x < up.x)
+                player->angle = 360.0F - player->angle;
 
-                // Move player
-                for (auto &tile : tiles)
-                    tile.position -= (player->velocity / distance_magnitude * distance);
+            // Move everything else so it looks like the player is moving
+            const Vec2 result = player->velocity / distance_magnitude * distance;
+
+            for (auto &tile : tiles)
+                tile.position -= result;
+            for (auto &bullet : bullets)
+                bullet.position -= result;
+            for (auto &enemy : enemies)
+                enemy.position -= result;
+        }
+
+        // Shooting
+        if (shoot) {
+            bullets.emplace_back(player->position, distance);
+            shoot = false;
+            shooting_delay = SHOOTING_DELAY_SWITCH;
+        }
+
+        for (std::size_t i = 0; i < bullets.size(); i++) {
+            bullets[i].position += bullets[i].direction;
+
+            if (int(bullets[i].position.x) < 0 || int(bullets[i].position.x) > window_width ||
+                int(bullets[i].position.y) < 0 || int(bullets[i].position.y) > window_height) {
+                bullets.erase(bullets.begin() + i);
+                i--;
+                continue;
             }
 
-            // Shooting
-            if (shoot)
-            {
-                bullets.emplace_back(player->position, distance);
-                shoot = false;
-                shooting_delay = 16;
-            }
-
-            for (std::size_t i = 0; i < bullets.size(); i++)
-            {
-                bullets[i].position += bullets[i].direction;
-
-                if (int(bullets[i].position.x) < 0 || int(bullets[i].position.x) > window_width ||
-                    int(bullets[i].position.y) < 0 || int(bullets[i].position.y) > window_height)
-                {
+            for (std::size_t j = 0; j < enemies.size(); j++) {
+                Vec2 distance = enemies[j].position - bullets[i].position;
+                if (distance.magnitude() < Enemy::size / 2) {
                     bullets.erase(bullets.begin() + i);
                     i--;
-                    continue;
-                }
+                    enemies.erase(enemies.begin() + j);
+                    j--;
 
-                for (std::size_t j = 0; j < enemies.size(); j++)
-                {
-                    Vec2 distance = enemies[j].position - bullets[i].position;
-                    if (distance.magnitude() < Enemy::size / 2)
-                    {
-                        bullets.erase(bullets.begin() + i);
-                        i--;
-                        enemies.erase(enemies.begin() + j);
-                        j--;
+                    enemies_shot++;
 
-                        enemies_shot++;
-                    }
+                    if (enemies_shot % 100 == 0)
+                        enemies.shrink_to_fit();
+                    
+                    break;
                 }
             }
         }
 
         // Enemy movement
-        for (auto &enemy : enemies)
-        {
+        for (auto &enemy : enemies) {
             // Turn player to mouse
             Vec2 up(0.0F, -1.0F);
             Vec2 distance = player->position - enemy.position;
@@ -164,8 +160,7 @@ namespace color_shootout
             
             enemy.position += enemy.velocity / distance_magnitude * distance;
 
-            if (distance_magnitude < Player::size / 2 && player->health > 0)
-            {
+            if (distance_magnitude < Player::size / 2 && player->health > 0) {
                 player->health--;
 
                 if (player->health == 0)
@@ -176,28 +171,26 @@ namespace color_shootout
             }
         }
 
-        if (enemy_spawn_counter == ENEMY_SPAWN_SWITCH)
-        {
+        if (enemy_spawn_counter == ENEMY_SPAWN_SWITCH) {
             Vec2 position;
-            switch (std::rand() % 4)
-            {
-                case 0:
-                    position.x = std::rand() % window_width;
-                    position.y = -Enemy::size;
-                    break;
-                case 1:
-                    position.x = window_width + Enemy::size;
-                    position.y = std::rand() % window_height;
-                    break;
-                case 2:
-                    position.x = std::rand() % window_width;
-                    position.y = window_height + Enemy::size;
-                    break;
-                case 3:
-                    position.x = -Enemy::size;
-                    position.y = std::rand() % window_height;
-                    break;
-                default: break;
+            switch (std::rand() % 4) {
+            case 0:
+                position.x = std::rand() % window_width;
+                position.y = -Enemy::size;
+                break;
+            case 1:
+                position.x = window_width + Enemy::size;
+                position.y = std::rand() % window_height;
+                break;
+            case 2:
+                position.x = std::rand() % window_width;
+                position.y = window_height + Enemy::size;
+                break;
+            case 3:
+                position.x = -Enemy::size;
+                position.y = std::rand() % window_height;
+                break;
+            default: break;
             }
 
             enemies.emplace_back(position);
@@ -216,16 +209,14 @@ namespace color_shootout
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        for (auto &tile : tiles)
-        {
+        for (auto &tile : tiles) {
             SDL_SetRenderDrawColor(renderer, (tile.color & 0xFF0000) >> 16, (tile.color & 0x00FF00) >> 8, 
                 tile.color & 0x0000FF, 255);
             SDL_Rect rect = { int(tile.position.x), int(tile.position.y), int(tile.width), int(tile.height) };
             SDL_RenderFillRect(renderer, &rect);
         }
 
-        for (auto &bullet : bullets)
-        {
+        for (auto &bullet : bullets) {
             SDL_Rect dstrect = { int(bullet.position.x) - int(bullet.width) / 2, 
                 int(bullet.position.y) - int(bullet.height) / 2, int(bullet.width), int(bullet.height) };
             SDL_RenderCopyEx(renderer, bullet_texture, nullptr, &dstrect, bullet.angle, &bullet.center, SDL_FLIP_NONE);
@@ -235,8 +226,7 @@ namespace color_shootout
             int(player->position.y) - int(player->size) / 2, int(player->size), int(player->size) };
         SDL_RenderCopyEx(renderer, player->texture, nullptr, &dstrect, player->angle, &player->center, SDL_FLIP_NONE);
 
-        for (auto &enemy : enemies)
-        {
+        for (auto &enemy : enemies) {
             SDL_Rect dstrect = { int(enemy.position.x) - int(enemy.size) / 2, 
                 int(enemy.position.y) - int(enemy.size) / 2, int(enemy.size), int(enemy.size) };
             SDL_RenderCopyEx(renderer, enemy_texture, nullptr, &dstrect, enemy.angle, &enemy.center, SDL_FLIP_NONE);

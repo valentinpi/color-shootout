@@ -7,13 +7,11 @@ int main(int argc, char *argv[])
     (void) argc;
     (void) argv;
 
-    try
-    {
+    try {
         color_shootout::Game game;
         game.run();
     }
-    catch (std::exception &e)
-    {
+    catch (std::exception &e) {
         std::cerr << "An exception has occured! The application will be terminated.\n"
             << e.what() << std::endl;
         return EXIT_FAILURE;
